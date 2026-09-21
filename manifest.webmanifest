@@ -1,0 +1,45 @@
+{
+  "name": "JD Finanzas - Control Quincenal & Deudas",
+  "short_name": "Finanzas JD",
+  "description": "Control de gastos y pagos de quincena, seguimiento de deudas en cuotas y presupuesto personal para JD.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#090514",
+  "theme_color": "#7c3aed",
+  "lang": "es",
+  "categories": ["finance", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver Quincena",
+      "url": "./index.html#quincena",
+      "description": "Revisar pagos pendientes de la quincena"
+    },
+    {
+      "name": "Deudas en Cuotas",
+      "url": "./index.html#cuotas",
+      "description": "Ver cuotas restantes y amortizaciones"
+    }
+  ]
+}
