@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jd-finanzas-v1.0.0';
+const CACHE_NAME = 'jd-finanzas-v3.0.3';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -6,9 +6,13 @@ const STATIC_ASSETS = [
   './css/styles.css',
   './js/app.js',
   './js/storage.js',
+  './js/supabase-client.js',
+  './js/auth.js',
   './js/quincena.js',
   './js/cuotas.js',
+  './js/cashea.js',
   './js/pwa.js',
+  './assets/cashea-mark.svg',
   './assets/icon.svg',
   './assets/icon-192.png',
   './assets/icon-512.png'

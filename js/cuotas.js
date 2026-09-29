@@ -5,9 +5,13 @@
 const CuotasManager = {
   statusFilter: 'all', // 'all', 'active', 'completed'
   searchFilter: '',
+  _initialized: false,
 
   init() {
-    this.setupFilterListeners();
+    if (!this._initialized) {
+      this.setupFilterListeners();
+      this._initialized = true;
+    }
     this.render();
   },
 

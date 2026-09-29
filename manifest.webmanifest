@@ -1,13 +1,13 @@
 {
-  "name": "JD Finanzas - Control Quincenal & Deudas",
+  "name": "JD Finanzas - Control Quincenal, Cuotas y Cashea",
   "short_name": "Finanzas JD",
-  "description": "Control de gastos y pagos de quincena, seguimiento de deudas en cuotas y presupuesto personal para JD.",
+  "description": "Control personal de quincenas, deudas, presupuesto y calendarios de cuotas Cashea.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#090514",
-  "theme_color": "#7c3aed",
+  "background_color": "#080f17",
+  "theme_color": "#0f766e",
   "lang": "es",
   "categories": ["finance", "productivity", "utilities"],
   "icons": [
@@ -40,6 +40,11 @@
       "name": "Deudas en Cuotas",
       "url": "./index.html#cuotas",
       "description": "Ver cuotas restantes y amortizaciones"
+    },
+    {
+      "name": "Calendario Cashea",
+      "url": "./index.html#cashea",
+      "description": "Revisar el calendario personal de cuotas Cashea"
     }
   ]
 }

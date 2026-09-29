@@ -4,31 +4,141 @@
 
 const App = {
   currentTab: 'dashboard',
+  _eventsInitialized: false,
+  _dataInitialized: false,
+  _externalScriptsPromise: null,
 
-  init() {
-    // Inicializar submódulos
+  REMOTE_SCRIPTS: {
+    tailwind: 'https://cdn.tailwindcss.com/3.4.17',
+    lucide: 'https://unpkg.com/lucide@0.468.0/dist/umd/lucide.js',
+    chart: 'https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js',
+    confetti: 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js',
+    supabase: 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js'
+  },
+
+  async init() {
+    if (!this._eventsInitialized) {
+      this.setupNavigation();
+      this.setupModals();
+      this.setupForms();
+      this.initSimulator();
+      this._eventsInitialized = true;
+    }
+
+    PWAManager.init();
+    try {
+      await this.loadScript('Supabase Auth', this.REMOTE_SCRIPTS.supabase);
+    } catch (error) {
+      console.error(error);
+    }
+    await AuthManager.init(() => this.initializeDataApp());
+  },
+
+  loadScript(name, url) {
+    const existing = document.querySelector(`script[data-runtime-library="${name}"]`);
+    if (existing) {
+      if (existing.dataset.loaded === 'true') return Promise.resolve();
+      return new Promise((resolve, reject) => {
+        existing.addEventListener('load', () => resolve(), { once: true });
+        existing.addEventListener('error', () => reject(new Error(`No se pudo cargar ${name}.`)), { once: true });
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = url;
+      script.async = true;
+      script.dataset.runtimeLibrary = name;
+      script.addEventListener('load', () => {
+        script.dataset.loaded = 'true';
+        resolve();
+      }, { once: true });
+      script.addEventListener('error', () => reject(new Error(`No se pudo cargar ${name}.`)), { once: true });
+      document.head.appendChild(script);
+    });
+  },
+
+  loadExternalScripts() {
+    if (this._externalScriptsPromise) return this._externalScriptsPromise;
+
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            purple: {
+              50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4',
+              400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e',
+              800: '#115e59', 900: '#134e4a', 950: '#082f2e'
+            },
+            violet: {
+              50: '#f5f3ff', 100: '#ede9fe', 200: '#ddd6fe', 300: '#c4b5fd',
+              400: '#a78bfa', 500: '#8b7fc7', 600: '#7166a8', 700: '#574e86',
+              800: '#403963', 900: '#2d2948', 950: '#19172b'
+            },
+            brand: {
+              50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4',
+              400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e',
+              800: '#115e59', 900: '#134e4a', 950: '#082f2e'
+            }
+          }
+        }
+      }
+    };
+
+    this._externalScriptsPromise = (async () => {
+      const failures = [];
+      try {
+        await this.loadScript('Tailwind CSS', this.REMOTE_SCRIPTS.tailwind);
+      } catch (error) {
+        console.error(error);
+        failures.push('Tailwind CSS (apariencia principal)');
+      }
+
+      const optionalLibraries = [
+        ['Lucide', this.REMOTE_SCRIPTS.lucide],
+        ['Chart.js', this.REMOTE_SCRIPTS.chart],
+        ['Confetti', this.REMOTE_SCRIPTS.confetti]
+      ];
+      const results = await Promise.allSettled(optionalLibraries.map(([name, url]) => this.loadScript(name, url)));
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          console.error(result.reason);
+          failures.push(optionalLibraries[index][0]);
+        }
+      });
+      return failures;
+    })();
+
+    return this._externalScriptsPromise;
+  },
+
+  async initializeDataApp() {
+    if (this._dataInitialized) return;
+    const dependencyFailures = await this.loadExternalScripts();
+    if (!dependencyFailures.includes('Supabase')) {
+      try {
+        SupabaseManager.init();
+      } catch (error) {
+        console.error(error);
+        dependencyFailures.push('Supabase conexión');
+      }
+    }
     StorageManager.init();
     QuincenaManager.init();
     CuotasManager.init();
-    PWAManager.init();
-
-    // Eventos y UI
-    this.setupNavigation();
-    this.setupModals();
-    this.setupForms();
-    this.updateDashboard();
-    this.initSimulator();
+    CasheaManager.init();
     this.loadSettingsInUI();
+    this.updateDashboard();
 
-    // Lucide Icons
-    if (window.lucide) {
-      lucide.createIcons();
-    }
-
-    // Comprobar si hay hash en la URL para navegación directa (#quincena, #cuotas, etc.)
     const hash = window.location.hash.replace('#', '');
-    if (['dashboard', 'quincena', 'cuotas', 'simulador', 'configuracion'].includes(hash)) {
-      this.switchTab(hash);
+    const validTabs = ['dashboard', 'quincena', 'cuotas', 'cashea', 'alcancia', 'simulador', 'configuracion'];
+    this.switchTab(validTabs.includes(hash) ? hash : 'dashboard');
+    this._dataInitialized = true;
+
+    if (dependencyFailures.length) {
+      this.showNotification(`La app continúa funcionando, pero no se pudo cargar: ${dependencyFailures.join(', ')}.`, 'info');
     }
   },
 
@@ -86,6 +196,7 @@ const App = {
     if (tabId === 'dashboard') this.updateDashboard();
     if (tabId === 'quincena') QuincenaManager.render();
     if (tabId === 'cuotas') CuotasManager.render();
+    if (tabId === 'cashea') CasheaManager.render();
     if (tabId === 'simulador') this.updateSimulator();
 
     // Scroll arriba suave
@@ -98,15 +209,17 @@ const App = {
   updateDashboard() {
     const qMetrics = QuincenaManager.calculateMetrics();
     const debtStats = CuotasManager.calculateOverallStats();
+    const casheaStats = CasheaManager.calculateStats();
     const settings = StorageManager.getSettings();
     const symbol = settings.currencySymbol || '$';
+    const displayName = settings.userName || 'JD';
 
     // Saludos según la hora
     const hour = new Date().getHours();
-    let greeting = '¡Hola, JD!';
-    if (hour < 12) greeting = '¡Buenos días, JD!';
-    else if (hour < 19) greeting = '¡Buenas tardes, JD!';
-    else greeting = '¡Buenas noches, JD!';
+    let greeting = `¡Hola, ${displayName}!`;
+    if (hour < 12) greeting = `¡Buenos días, ${displayName}!`;
+    else if (hour < 19) greeting = `¡Buenas tardes, ${displayName}!`;
+    else greeting = `¡Buenas noches, ${displayName}!`;
 
     const greetingEl = document.getElementById('dashGreeting');
     if (greetingEl) greetingEl.textContent = greeting;
@@ -127,7 +240,10 @@ const App = {
 
     if (dashIncomeEl) dashIncomeEl.textContent = `${symbol}${qMetrics.totalIncome.toLocaleString('es-ES', { minimumFractionDigits: 2 })}`;
     if (dashCommittedEl) dashCommittedEl.textContent = `${symbol}${qMetrics.totalPayments.toLocaleString('es-ES', { minimumFractionDigits: 2 })}`;
-    if (dashTotalDebtEl) dashTotalDebtEl.textContent = `${symbol}${debtStats.totalRemainingDebt.toLocaleString('es-ES', { minimumFractionDigits: 2 })}`;
+    if (dashTotalDebtEl) {
+      const consolidatedDebt = debtStats.totalRemainingDebt + casheaStats.pendingAmount;
+      dashTotalDebtEl.textContent = `${symbol}${consolidatedDebt.toLocaleString('es-ES', { minimumFractionDigits: 2 })}`;
+    }
 
     const dashAmortPercent = document.getElementById('dashAmortizationPercent');
     const dashAmortBar = document.getElementById('dashAmortizationBar');
@@ -249,6 +365,18 @@ const App = {
     }
   },
 
+  openAddCasheaModal() {
+    const modal = document.getElementById('addCasheaModal');
+    if (!modal) return;
+    const form = document.getElementById('formAddCashea');
+    if (form) form.reset();
+    const dateInput = document.getElementById('casheaFirstDate');
+    if (dateInput) dateInput.value = new Date().toISOString().slice(0, 10);
+    modal.classList.remove('hidden');
+    CasheaManager.updatePreview();
+    document.getElementById('casheaTitle')?.focus();
+  },
+
   // Formularios
   setupForms() {
     // Form Pago
@@ -362,6 +490,32 @@ const App = {
       });
     }
 
+    // Form Plan Cashea
+    const formCashea = document.getElementById('formAddCashea');
+    if (formCashea) {
+      ['casheaTotalAmount', 'casheaInstallmentCount', 'casheaFirstDate'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', () => CasheaManager.updatePreview());
+      });
+      formCashea.addEventListener('submit', (event) => {
+        event.preventDefault();
+        try {
+          CasheaManager.addPlan({
+            title: document.getElementById('casheaTitle').value,
+            merchant: document.getElementById('casheaMerchant').value,
+            totalAmount: document.getElementById('casheaTotalAmount').value,
+            installmentCount: Number(document.getElementById('casheaInstallmentCount').value),
+            firstDate: document.getElementById('casheaFirstDate').value,
+            notes: document.getElementById('casheaNotes').value
+          });
+          formCashea.reset();
+          document.getElementById('addCasheaModal').classList.add('hidden');
+          this.switchTab('cashea');
+        } catch (error) {
+          this.showNotification(error.message || 'No se pudo guardar el plan.', 'info');
+        }
+      });
+    }
+
     // Selectores de Quincena (mes, año, periodo)
     const selectMonth = document.getElementById('selectMonth');
     const selectYear = document.getElementById('selectYear');
@@ -444,51 +598,68 @@ const App = {
     const salaryInput = document.getElementById('settingDefaultSalary');
 
     StorageManager.saveSettings({
-      userName: nameInput ? nameInput.value.trim() : 'JD',
-      currencySymbol: currencyInput ? currencyInput.value.trim() : '$',
+      userName: nameInput ? nameInput.value.trim().slice(0, 60) : 'JD',
+      currencySymbol: currencyInput ? (currencyInput.value.replace(/[<>&"'`]/g, '').trim().slice(0, 12) || '$') : '$',
       defaultIncome: salaryInput ? parseFloat(salaryInput.value) : 1200
     });
 
     this.updateDashboard();
     QuincenaManager.render();
     CuotasManager.render();
+    CasheaManager.render();
     this.showNotification('Ajustes guardados correctamente', 'success');
   },
 
-  // Exportar respaldo JSON
+  // Exportar respaldo restaurable JSON (único formato visible)
   exportDataJSON() {
     const jsonStr = StorageManager.exportBackup();
-    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `JD_Finanzas_Respaldo_${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    this.showNotification('Respaldo descargado con éxito', 'success');
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `JD_Finanzas_Respaldo_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+    this.showNotification('Respaldo JSON descargado con éxito', 'success');
   },
 
-  // Importar respaldo JSON
-  importDataJSON(fileInput) {
-    const file = fileInput.files[0];
+  readBackupFile(file) {
+    if (typeof file.text === 'function') return file.text();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = event => resolve(event.target.result);
+      reader.onerror = () => reject(new Error('No se pudo leer el archivo seleccionado.'));
+      reader.readAsText(file, 'utf-8');
+    });
+  },
+
+  // Importar respaldo JSON v3 o legacy con validación previa
+  async importDataJSON(fileInput) {
+    const file = fileInput.files && fileInput.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = StorageManager.importBackup(e.target.result);
-      if (result.success) {
-        this.updateDashboard();
-        QuincenaManager.render();
-        CuotasManager.render();
-        this.showNotification('Copia de seguridad restaurada correctamente', 'success');
-      } else {
-        alert('Error al importar archivo: ' + result.error);
-      }
-    };
-    reader.readAsText(file);
-    fileInput.value = '';
+    try {
+      if (!/\.json$/i.test(file.name || '')) throw new Error('Selecciona un archivo con extensión .json.');
+      if (file.size > 10 * 1024 * 1024) throw new Error('El respaldo supera el límite razonable de 10 MB.');
+      if (!confirm('Restaurar este respaldo reemplazará los datos financieros actuales. ¿Deseas continuar?')) return;
+
+      const content = await this.readBackupFile(file);
+      const result = StorageManager.importBackup(content);
+      if (!result.success) throw new Error(result.error);
+
+      this.loadSettingsInUI();
+      QuincenaManager.render();
+      CuotasManager.render();
+      CasheaManager.render();
+      this.updateDashboard();
+      this.showNotification('Copia de seguridad restaurada correctamente', 'success');
+    } catch (error) {
+      alert(`Error al importar archivo: ${error.message}`);
+    } finally {
+      fileInput.value = '';
+    }
   },
 
   // Exportar resumen a CSV
@@ -550,6 +721,9 @@ const App = {
     }, 3800);
   }
 };
+
+// Exponer para módulos y acciones declarativas del HTML.
+window.App = App;
 
 // Arrancar al cargar la ventana
 window.addEventListener('DOMContentLoaded', () => {

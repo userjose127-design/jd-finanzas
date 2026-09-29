@@ -22,10 +22,14 @@ const QuincenaManager = {
   searchFilter: '',
   statusFilter: 'all', // 'all', 'pending', 'paid'
   viewMode: 'list',    // 'list' | 'kanban'
+  _initialized: false,
 
   init() {
-    this.setupDateSelectors();
-    this.setupFilterListeners();
+    if (!this._initialized) {
+      this.setupDateSelectors();
+      this.setupFilterListeners();
+      this._initialized = true;
+    }
     this.render();
   },
 
@@ -127,7 +131,7 @@ const QuincenaManager = {
     const data = this.getCurrentData();
     data.incomeList = data.incomeList || [];
     data.incomeList.push({
-      id: 'inc_' + Date.now(),
+      id: StorageManager.createId('inc'),
       title: title.trim(),
       amount: parseFloat(amount),
       date: date || new Date().toISOString().split('T')[0]
@@ -150,7 +154,7 @@ const QuincenaManager = {
     const data = this.getCurrentData();
     data.paymentList = data.paymentList || [];
     const newPayment = {
-      id: 'pay_' + Date.now(),
+      id: StorageManager.createId('pay'),
       title: payment.title.trim(),
       amount: parseFloat(payment.amount),
       category: payment.category || 'Otro',
@@ -213,7 +217,7 @@ const QuincenaManager = {
       const day = item.dueDate ? item.dueDate.split('-')[2] : '15';
       const newDueDate = `${this.activeYear}-${String(this.activeMonth).padStart(2, '0')}-${day}`;
       currentData.paymentList.push({
-        id: 'pay_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        id: StorageManager.createId('pay'),
         title: item.title,
         amount: item.amount,
         category: item.category,

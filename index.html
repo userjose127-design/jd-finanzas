@@ -7,7 +7,7 @@
 
   <!-- PWA & Mobile Meta Tags -->
   <meta name="description" content="Aplicación personal para JD: control de pagos de quincena, seguimiento de deudas en cuotas y presupuesto.">
-  <meta name="theme-color" content="#7c3aed">
+  <meta name="theme-color" content="#0f766e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Finanzas JD">
@@ -15,45 +15,15 @@
   <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
   <link rel="apple-touch-icon" href="assets/icon-192.png">
 
-  <!-- Google Fonts & Tailwind CDN -->
+  <!-- Google Fonts CSS only. All remote JavaScript loads after local authentication. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#f5f3ff',
-              100: '#ede9fe',
-              200: '#ddd6fe',
-              300: '#c4b5fd',
-              400: '#a78bfa',
-              500: '#8b5cf6',
-              600: '#7c3aed',
-              700: '#6d28d9',
-              800: '#5b21b6',
-              900: '#4c1d95',
-              950: '#0f0728',
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- External Libraries (Icons, Charts, Confetti) -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-[#080413] text-slate-100 min-h-screen pb-24 lg:pb-8">
+<body class="auth-locked bg-[#080f17] text-slate-100 min-h-screen pb-24 lg:pb-8">
 
   <!-- ==================== BANNER DE INSTALACIÓN PWA ==================== -->
   <aside id="pwaInstallBanner" aria-label="Instalación de aplicación" class="hidden relative z-40 bg-gradient-to-r from-purple-900/90 via-violet-800/90 to-purple-950/90 border-b border-purple-500/30 px-4 py-2.5 backdrop-blur-md">
@@ -106,8 +76,14 @@
         <button data-tab-target="quincena" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-purple-300/70 hover:text-white flex items-center gap-1.5">
           <i data-lucide="calendar" class="w-4 h-4"></i> Quincena
         </button>
-        <button data-tab-target="cuotas" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-purple-300/70 hover:text-white flex items-center gap-1.5">
+        <button data-tab-target="cuotas" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold transition text-purple-300/70 hover:text-white flex items-center gap-1.5">
           <i data-lucide="credit-card" class="w-4 h-4"></i> Cuotas
+        </button>
+        <button data-tab-target="cashea" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold transition text-purple-300/70 hover:text-white flex items-center gap-1.5">
+          <img src="assets/cashea-mark.svg" alt="" class="w-4 h-4"> Cashea
+        </button>
+        <button data-tab-target="alcancia" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold transition text-purple-300/70 hover:text-white flex items-center gap-1.5">
+          <i data-lucide="piggy-bank" class="w-4 h-4"></i> Alcancía
         </button>
         <button data-tab-target="simulador" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-purple-300/70 hover:text-white flex items-center gap-1.5">
           <i data-lucide="calculator" class="w-4 h-4"></i> Simulador
@@ -212,7 +188,7 @@
             </div>
           </div>
           <div id="dashTotalDebt" class="text-2xl sm:text-3xl font-black text-pink-300">$0.00</div>
-          <div class="text-[11px] text-purple-300/60 mt-1">Saldo restante en compras a plazos</div>
+          <div class="text-[11px] text-purple-300/60 mt-1">Cuotas generales + saldo Cashea pendiente</div>
         </div>
 
       </div>
@@ -377,8 +353,8 @@
           </button>
         </div>
 
-        <button onclick="App.exportCSV()" class="px-3 py-2 rounded-xl bg-purple-950/60 hover:bg-purple-900/60 border border-purple-800/40 text-purple-300 text-xs font-medium flex items-center gap-1.5 transition">
-          <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Exportar CSV
+        <button onclick="App.exportDataJSON()" class="px-3 py-2 rounded-xl bg-purple-950/60 hover:bg-purple-900/60 border border-purple-800/40 text-purple-300 text-xs font-medium flex items-center gap-1.5 transition">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i> Respaldar JSON
         </button>
       </div>
 
@@ -586,6 +562,56 @@
 
     </div>
 
+    <!-- ==================== TAB: CASHEA ==================== -->
+    <div id="tab-cashea" class="tab-panel hidden space-y-6">
+      <section class="cashea-hero">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+          <div class="flex items-start gap-3">
+            <img src="assets/cashea-mark.svg" alt="Marca C neutral" class="w-12 h-12 sm:w-14 sm:h-14">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h2 class="text-xl sm:text-2xl font-black text-white">Calendario Cashea</h2>
+                <span class="cashea-neutral-badge">Seguimiento personal</span>
+              </div>
+              <p class="text-xs text-teal-100/70 mt-1 max-w-xl">Organiza compras y sus cuotas cada 14 días. Seguimiento personal, no afiliado a Cashea.</p>
+            </div>
+          </div>
+          <button onclick="App.openAddCasheaModal()" class="btn-cashea flex-shrink-0"><i data-lucide="plus" class="w-4 h-4"></i> Registrar plan</button>
+        </div>
+      </section>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="glass-card p-4 border border-teal-900/50">
+          <div class="text-xs text-teal-200/70 font-semibold">Saldo Cashea pendiente</div>
+          <div id="casheaPendingBalance" class="text-2xl font-black text-teal-300 mt-1">$0.00</div>
+          <div class="text-[11px] text-slate-400 mt-1">Incluido en la deuda total del resumen</div>
+        </div>
+        <div class="glass-card p-4 border border-teal-900/50">
+          <div class="text-xs text-teal-200/70 font-semibold">Próxima cuota</div>
+          <div id="casheaNextInstallment" class="text-2xl font-black text-white mt-1">—</div>
+          <div id="casheaNextInstallmentDetail" class="text-[11px] text-slate-400 mt-1">Sin cuotas pendientes</div>
+        </div>
+        <div class="glass-card p-4 border border-teal-900/50">
+          <div class="text-xs text-teal-200/70 font-semibold">Planes activos</div>
+          <div id="casheaActivePlans" class="text-2xl font-black text-violet-200 mt-1">0</div>
+          <div class="text-[11px] text-slate-400 mt-1">Con al menos una cuota pendiente</div>
+        </div>
+      </div>
+
+      <div id="casheaPlansList" class="space-y-4"></div>
+    </div>
+
+    <!-- ==================== TAB: ALCANCÍA ==================== -->
+    <div id="tab-alcancia" class="tab-panel hidden">
+      <section class="savings-preview glass-card">
+        <div class="savings-orb"><i data-lucide="piggy-bank" class="w-12 h-12"></i></div>
+        <span class="coming-soon-badge">Próximamente</span>
+        <h2>Alcancía</h2>
+        <p>Un espacio para visualizar metas de ahorro y progreso personal. Estamos preparando una experiencia simple y clara; todavía no guarda datos ni realiza movimientos.</p>
+        <div class="savings-visual" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      </section>
+    </div>
+
     <!-- ==================== TAB: SIMULADOR ==================== -->
     <div id="tab-simulador" class="tab-panel hidden space-y-6">
       
@@ -700,6 +726,25 @@
           <button onclick="App.saveSettingsFromUI()" class="btn-purple px-4 py-2.5 rounded-xl text-xs font-bold w-full flex items-center justify-center gap-2">
             <i data-lucide="save" class="w-4 h-4"></i> Guardar Ajustes
           </button>
+
+          <div class="settings-shortcuts">
+            <h4 class="font-bold text-white text-xs">Herramientas</h4>
+            <button onclick="App.switchTab('simulador')" class="settings-action-btn">
+              <i data-lucide="calculator" class="w-4 h-4"></i>
+              <span><strong>Abrir Simulador</strong><small>Proyecta gastos y liquidez de la quincena.</small></span>
+            </button>
+          </div>
+
+          <div class="local-auth-note">
+            <div class="flex items-start gap-2">
+              <i data-lucide="lock-keyhole" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
+              <p><strong>Cuenta en la nube activa.</strong> El acceso y los datos nuevos se gestionan con Supabase. Los datos antiguos de este navegador no se migran automáticamente.</p>
+            </div>
+            <div class="local-auth-actions">
+              <button onclick="AuthManager.resetAccess()" class="btn-reset-access"><i data-lucide="key-round" class="w-4 h-4"></i> Restablecer / cambiar acceso</button>
+              <button onclick="AuthManager.logout()" class="btn-logout"><i data-lucide="log-out" class="w-4 h-4"></i> Cerrar sesión</button>
+            </div>
+          </div>
         </div>
 
         <!-- Respaldos y PWA -->
@@ -719,7 +764,7 @@
 
             <label class="w-full py-2.5 px-4 rounded-xl bg-purple-900/40 hover:bg-purple-900 border border-purple-700/50 text-purple-200 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition">
               <i data-lucide="upload" class="w-4 h-4 text-purple-400"></i> Restaurar Copia desde Archivo
-              <input type="file" id="importJsonInput" accept=".json" onchange="App.importDataJSON(this)" class="hidden">
+              <input type="file" id="importJsonInput" accept="application/json,.json" onchange="App.importDataJSON(this)" class="hidden">
             </label>
           </div>
 
@@ -741,33 +786,24 @@
 
   <!-- ==================== BARRA INFERIOR MÓVIL (APP NATIVA) ==================== -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#090416]/95 backdrop-blur-2xl border-t border-purple-900/50 safe-bottom">
-    <div class="grid grid-cols-5 h-16 max-w-lg mx-auto">
+    <div class="grid grid-cols-6 h-16 max-w-xl mx-auto mobile-nav-grid">
       <button data-tab-target="dashboard" class="mobile-nav-item flex flex-col items-center justify-center text-purple-400 bg-purple-900/40 transition">
-        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-        <span class="text-[10px] font-bold mt-1">Inicio</span>
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[9px] font-bold mt-1">Inicio</span>
       </button>
-
       <button data-tab-target="quincena" class="mobile-nav-item flex flex-col items-center justify-center text-purple-300/60 transition">
-        <i data-lucide="calendar" class="w-5 h-5"></i>
-        <span class="text-[10px] font-medium mt-1">Quincena</span>
+        <i data-lucide="calendar" class="w-5 h-5"></i><span class="text-[9px] font-medium mt-1">Quincena</span>
       </button>
-
-      <!-- Botón central flotante de añadir -->
-      <button onclick="App.openAddPaymentModal()" class="flex flex-col items-center justify-center text-white transition -mt-5">
-        <div class="w-12 h-12 rounded-full btn-purple flex items-center justify-center shadow-lg shadow-purple-600/50 border-2 border-[#090416]">
-          <i data-lucide="plus" class="w-6 h-6"></i>
-        </div>
-        <span class="text-[10px] font-semibold mt-0.5 text-purple-300">Pagar</span>
+      <button data-tab-target="cashea" class="mobile-nav-item flex flex-col items-center justify-center text-purple-300/60 transition">
+        <img src="assets/cashea-mark.svg" alt="" class="w-5 h-5"><span class="text-[9px] font-medium mt-1">Cashea</span>
       </button>
-
+      <button data-tab-target="alcancia" class="mobile-nav-item flex flex-col items-center justify-center text-purple-300/60 transition">
+        <i data-lucide="piggy-bank" class="w-5 h-5"></i><span class="text-[9px] font-medium mt-1">Alcancía</span>
+      </button>
       <button data-tab-target="cuotas" class="mobile-nav-item flex flex-col items-center justify-center text-purple-300/60 transition">
-        <i data-lucide="credit-card" class="w-5 h-5"></i>
-        <span class="text-[10px] font-medium mt-1">Cuotas</span>
+        <i data-lucide="credit-card" class="w-5 h-5"></i><span class="text-[9px] font-medium mt-1">Cuotas</span>
       </button>
-
       <button data-tab-target="configuracion" class="mobile-nav-item flex flex-col items-center justify-center text-purple-300/60 transition">
-        <i data-lucide="settings" class="w-5 h-5"></i>
-        <span class="text-[10px] font-medium mt-1">Ajustes</span>
+        <i data-lucide="settings" class="w-5 h-5"></i><span class="text-[9px] font-medium mt-1">Más</span>
       </button>
     </div>
   </nav>
@@ -956,6 +992,52 @@
     </div>
   </div>
 
+  <!-- ==================== MODAL: REGISTRAR PLAN CASHEA ==================== -->
+  <div id="addCasheaModal" class="modal-container hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="glass-card-elevated w-full max-w-lg p-5 sm:p-6 rounded-3xl border border-teal-600/40 animate-fade-in max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2.5">
+          <img src="assets/cashea-mark.svg" alt="" class="w-9 h-9">
+          <div><h3 class="font-black text-lg text-white">Registrar plan Cashea</h3><p class="text-[10px] text-teal-200/60">Seguimiento personal, no afiliado a Cashea</p></div>
+        </div>
+        <button class="modal-close text-slate-400 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="formAddCashea" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-200 mb-1">Compra o descripción *</label>
+          <input type="text" id="casheaTitle" maxlength="120" required placeholder="Ej: Teléfono, compra del hogar..." class="form-control">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-200 mb-1">Comercio (opcional)</label>
+          <input type="text" id="casheaMerchant" maxlength="120" placeholder="Nombre del comercio" class="form-control">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-200 mb-1">Monto total *</label>
+            <input type="number" id="casheaTotalAmount" min="0.01" step="0.01" required placeholder="0.00" class="form-control">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-200 mb-1">Número de cuotas *</label>
+            <input type="number" id="casheaInstallmentCount" min="1" max="120" step="1" required placeholder="4" class="form-control">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-200 mb-1">Primera fecha de cuota *</label>
+          <input type="date" id="casheaFirstDate" required class="form-control">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-200 mb-1">Notas (opcional)</label>
+          <textarea id="casheaNotes" maxlength="300" rows="2" placeholder="Referencia personal" class="form-control resize-none"></textarea>
+        </div>
+        <div id="casheaSchedulePreview" class="cashea-preview">Completa monto, cuotas y fecha para previsualizar el calendario.</div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" class="modal-close px-4 py-2 text-xs text-slate-400 hover:text-white">Cancelar</button>
+          <button type="submit" class="btn-cashea"><i data-lucide="calendar-plus" class="w-4 h-4"></i> Crear calendario</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ==================== MODAL: GUÍA INSTALACIÓN EN IPHONE (IOS) ==================== -->
   <div id="iosInstallModal" class="modal-container hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
     <div class="glass-card-elevated w-full max-w-md p-6 rounded-3xl border border-purple-600/40 text-center animate-fade-in">
@@ -1024,8 +1106,11 @@
 
   <!-- Scripts -->
   <script src="js/storage.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/quincena.js"></script>
   <script src="js/cuotas.js"></script>
+  <script src="js/cashea.js"></script>
   <script src="js/pwa.js"></script>
   <script src="js/app.js"></script>
 </body>
