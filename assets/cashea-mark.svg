@@ -1,7 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-  <title id="title">Cashea</title>
-  <desc id="desc">Ícono amarillo de Cashea con cuadro negro y C blanca.</desc>
-  <rect width="512" height="512" rx="116" fill="#ffeb00"/>
-  <rect x="108" y="108" width="296" height="296" rx="68" fill="#050505"/>
+  <title id="title">Calendario Cashea</title>
+  <desc id="desc">Marca personalizada morada, negra y blanca para el calendario personal de Cashea.</desc>
+  <defs>
+    <linearGradient id="violet" x1="70" y1="55" x2="440" y2="458" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9659f4"/>
+      <stop offset="1" stop-color="#52209f"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#violet)"/>
+  <rect x="108" y="108" width="296" height="296" rx="68" fill="#090909"/>
   <path fill="#ffffff" d="M337 183c-19-22-47-35-78-35-61 0-110 49-110 110s49 110 110 110c31 0 59-13 78-35l-47-47c-8 10-19 15-31 15-24 0-43-19-43-43s19-43 43-43c12 0 23 5 31 15l47-47Z"/>
 </svg>

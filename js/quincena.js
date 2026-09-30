@@ -3,15 +3,15 @@
    ========================================================================== */
 
 const CATEGORIES = [
-  { name: 'Vivienda', icon: 'home', color: '#8b5cf6' },
-  { name: 'Servicios', icon: 'zap', color: '#06b6d4' },
-  { name: 'Alimentación', icon: 'shopping-cart', color: '#10b981' },
-  { name: 'Transporte', icon: 'truck', color: '#f59e0b' },
-  { name: 'Cuotas', icon: 'credit-card', color: '#ec4899' },
-  { name: 'Ahorro', icon: 'piggy-bank', color: '#14b8a6' },
-  { name: 'Entretenimiento', icon: 'film', color: '#a855f7' },
-  { name: 'Salud', icon: 'heart', color: '#ef4444' },
-  { name: 'Otro', icon: 'tag', color: '#94a3b8' }
+  { name: 'Vivienda', icon: 'home', color: '#b88cff' },
+  { name: 'Servicios', icon: 'zap', color: '#9659f4' },
+  { name: 'Alimentación', icon: 'shopping-cart', color: '#d5bdff' },
+  { name: 'Transporte', icon: 'truck', color: '#8d8d96' },
+  { name: 'Cuotas', icon: 'credit-card', color: '#7838dc' },
+  { name: 'Ahorro', icon: 'piggy-bank', color: '#ad82ef' },
+  { name: 'Entretenimiento', icon: 'film', color: '#6527c5' },
+  { name: 'Salud', icon: 'heart', color: '#c9a7ff' },
+  { name: 'Otro', icon: 'tag', color: '#a1a1aa' }
 ];
 
 const QuincenaManager = {
@@ -612,8 +612,8 @@ const QuincenaManager = {
     }
 
     const colors = [
-      '#8b5cf6', '#a855f7', '#c084fc', '#ec4899', 
-      '#06b6d4', '#10b981', '#f59e0b', '#6366f1', '#64748b'
+      '#52209f', '#6527c5', '#7838dc', '#9659f4',
+      '#b88cff', '#d5bdff', '#7d638f', '#4d3b5e', '#a1a1aa'
     ];
 
     if (this.chartInstance) {

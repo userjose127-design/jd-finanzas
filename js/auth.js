@@ -69,13 +69,13 @@ const AuthManager = {
     const screen = this.ensureScreen();
     screen.innerHTML = `
   <div class="auth-card">
-        <div class="auth-brand" aria-hidden="true"><img src="assets/icon.jpg" alt="Control Financiero" class="auth-brand-logo"></div>
+        <div class="auth-brand" aria-hidden="true"><img src="assets/icon-512.png" alt="Control Financiero" class="auth-brand-logo"></div>
         <div class="auth-copy">
           <span class="auth-eyebrow">CONTROL FINANCIERO</span>
           ${content}
           <div class="auth-disclaimer">
             <span aria-hidden="true">⚠</span>
-            <span>Tu cuenta se gestiona con Supabase Auth. Usa una contraseña única y no compartas tus credenciales. Tus datos financieros nuevos se guardarán en tu cuenta.</span>
+            <span>Tu acceso se protege con Supabase Auth. Usa una contraseña única y no compartas tus credenciales. Los datos financieros permanecen guardados en este dispositivo.</span>
           </div>
         </div>
       </div>`;
@@ -109,7 +109,7 @@ const AuthManager = {
     const messageClass = messageType === 'success' ? 'auth-success' : 'auth-error';
     this.renderShell(`
       <h1>Crea tu cuenta</h1>
-      <p>Comienza con datos nuevos sincronizados en tus dispositivos.</p>
+      <p>Crea un acceso protegido para usar esta aplicación.</p>
       ${message ? `<div class="auth-message ${messageClass}">${this.escapeHTML(message)}</div>` : ''}
       <form id="authCreateForm" class="auth-form">
         <label>Nombre para mostrar

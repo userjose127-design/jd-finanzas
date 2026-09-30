@@ -1,38 +1,44 @@
 {
-  "name": "Control Financiero - Control Quincenal, Cuotas y Cashea",
+  "name": "Control Financiero - Quincenas y Cuotas",
   "short_name": "Finanzas",
-  "description": "Control general de ingresos, quincenas, deudas, presupuesto y calendarios de cuotas.",
+  "description": "Control simple de ingresos, pagos, cuotas y planes Cashea.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#080f17",
-  "theme_color": "#0f766e",
+  "background_color": "#090909",
+  "theme_color": "#090909",
   "lang": "es",
   "categories": ["finance", "productivity", "utilities"],
   "icons": [
     {
-      "src": "assets/icon.jpg",
-      "sizes": "any",
-      "type": "image/jpeg",
-      "purpose": "any maskable"
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
     {
-      "name": "Ver Quincena",
+      "name": "Mi Quincena",
       "url": "./index.html#quincena",
-      "description": "Revisar pagos pendientes de la quincena"
+      "description": "Registrar y revisar ingresos y pagos"
     },
     {
-      "name": "Deudas en Cuotas",
+      "name": "Mis Cuotas",
       "url": "./index.html#cuotas",
-      "description": "Ver cuotas restantes y amortizaciones"
+      "description": "Revisar créditos y compras a plazos"
     },
     {
       "name": "Calendario Cashea",
       "url": "./index.html#cashea",
-      "description": "Revisar el calendario personal de cuotas Cashea"
+      "description": "Revisar el calendario personal de planes Cashea"
     }
   ]
 }

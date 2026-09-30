@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jd-finanzas-v3.0.9';
+const CACHE_NAME = 'jd-finanzas-v4.0.0';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -13,38 +13,31 @@ const STATIC_ASSETS = [
   './js/cashea.js',
   './js/pwa.js',
   './assets/cashea-mark.svg',
-  './assets/icon.jpg'
+  './assets/icon.jpg',
+  './assets/icon-192.png',
+  './assets/icon-512.png'
 ];
 
-// Install Event: pre-cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(STATIC_ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
-// Activate Event: clean up older caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches.keys()
+      .then((keys) => Promise.all(keys.map((key) => key === CACHE_NAME ? null : caches.delete(key))))
+      .then(() => self.clients.claim())
   );
 });
 
-// Fetch Event: Stale-While-Revalidate for app assets, Network-First for CDN libraries
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
 
-  // If external CDN (like tailwind, fonts, icons, chart.js), try cache then network
   if (url.origin !== location.origin) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
@@ -55,15 +48,12 @@ self.addEventListener('fetch', (event) => {
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
           }
           return networkResponse;
-        }).catch(() => {
-          return cachedResponse;
-        });
+        }).catch(() => cachedResponse);
       })
     );
     return;
   }
 
-  // Local assets: Stale while revalidate
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const fetchPromise = fetch(event.request).then((networkResponse) => {
