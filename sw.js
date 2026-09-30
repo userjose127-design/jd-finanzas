@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jd-finanzas-v3.0.8';
+const CACHE_NAME = 'jd-finanzas-v3.0.9';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -13,9 +13,7 @@ const STATIC_ASSETS = [
   './js/cashea.js',
   './js/pwa.js',
   './assets/cashea-mark.svg',
-  './assets/icon.svg',
-  './assets/icon-192.png',
-  './assets/icon-512.png'
+  './assets/icon.jpg'
 ];
 
 // Install Event: pre-cache static assets
