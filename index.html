@@ -91,9 +91,6 @@
         <button onclick="PWAManager.triggerInstall()" class="btn-install-pwa hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-900/50 hover:bg-purple-800/80 border border-purple-600/40 text-purple-200 text-xs font-semibold transition">
           <i data-lucide="smartphone" class="w-3.5 h-3.5 text-purple-400"></i> Instalar App
         </button>
-        <button onclick="App.openAddPaymentModal()" class="btn-purple px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5">
-          <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden sm:inline">Nuevo</span> Pago
-        </button>
       </div>
 
     </div>
@@ -458,8 +455,15 @@
 
     <!-- ==================== TAB: CUOTAS (DEUDAS EN CUOTAS) ==================== -->
     <div id="tab-cuotas" class="tab-panel hidden space-y-6">
-      
-      <!-- Cabecera de Cuotas -->
+      <section class="cuotas-coming-soon glass-card">
+        <div class="cuotas-coming-icon"><i data-lucide="layers-3" class="w-10 h-10"></i></div>
+        <span class="coming-soon-badge">En prueba · Próximamente</span>
+        <h2>Cuotas generales</h2>
+        <p>Esta sección servirá para registrar deudas divididas que no pertenezcan a Cashea, como préstamos, tarjetas o compras financiadas por otra entidad.</p>
+        <p class="cuotas-coming-note">Por ahora, registra tus compromisos normales en <strong>Pagos pendientes</strong> y las compras Cashea en su apartado exclusivo.</p>
+        <button onclick="App.switchTab('cashea')" class="btn-cashea"><i data-lucide="arrow-right" class="w-4 h-4"></i> Ir a Cashea</button>
+      </section>
+
       <div class="glass-card p-5 sm:p-7 border border-purple-700/40 relative overflow-hidden">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div>

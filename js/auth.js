@@ -252,6 +252,11 @@ const AuthManager = {
         await this._onAuthenticated();
         this._authenticatedNotified = true;
       }
+      const displayName = String(session.user.user_metadata?.display_name || session.user.user_metadata?.userName || '').trim();
+      if (displayName && globalThis.StorageManager) {
+        StorageManager.saveSettings({ userName: displayName });
+        if (window.App && typeof window.App.updateDashboard === 'function') window.App.updateDashboard();
+      }
       document.body.classList.remove('auth-locked');
       document.body.classList.add('auth-unlocked');
     } catch (error) {

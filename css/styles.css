@@ -962,3 +962,38 @@ button {
   border-color: #5eead4 !important;
   box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.16);
 }
+
+/* Cuotas generales: se reserva como módulo futuro para no duplicar Cashea. */
+#tab-cuotas > :not(.cuotas-coming-soon) {
+  display: none !important;
+}
+.cuotas-coming-soon {
+  width: min(100%, 42rem);
+  min-height: 23rem;
+  margin: 2rem auto;
+  padding: clamp(2rem, 6vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  text-align: center;
+  background: linear-gradient(145deg, rgba(25, 49, 66, 0.94), rgba(12, 28, 41, 0.98)) !important;
+  border: 1px solid rgba(94, 234, 212, 0.2) !important;
+  border-radius: 1.5rem;
+}
+.cuotas-coming-icon {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-bottom: 0.35rem;
+  border: 1px solid rgba(250, 204, 21, 0.25);
+  border-radius: 1.35rem;
+  color: #fde68a;
+  background: rgba(250, 204, 21, 0.1);
+}
+.cuotas-coming-soon h2 { color: #f8fafc; font-size: clamp(1.45rem, 4vw, 2rem); font-weight: 900; }
+.cuotas-coming-soon p { max-width: 34rem; color: #a8bac8; font-size: 0.8rem; line-height: 1.65; }
+.cuotas-coming-note { color: #d8e7ed !important; }
+.cuotas-coming-note strong { color: #fef3c7; }
