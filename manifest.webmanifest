@@ -1,7 +1,7 @@
 {
-  "name": "JD Finanzas - Control Quincenal, Cuotas y Cashea",
-  "short_name": "Finanzas JD",
-  "description": "Control personal de quincenas, deudas, presupuesto y calendarios de cuotas Cashea.",
+  "name": "Control Financiero - Control Quincenal, Cuotas y Cashea",
+  "short_name": "Finanzas",
+  "description": "Control general de ingresos, quincenas, deudas, presupuesto y calendarios de cuotas.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

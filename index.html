@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>JD Finanzas - Control Quincenal & Cuotas</title>
+  <title>Control Financiero - Ingresos · Quincenas · Cuotas</title>
 
   <!-- PWA & Mobile Meta Tags -->
-  <meta name="description" content="Aplicación personal para JD: control de pagos de quincena, seguimiento de deudas en cuotas y presupuesto.">
+  <meta name="description" content="Aplicación general para controlar ingresos, pagos, deudas, cuotas y presupuesto.">
   <meta name="theme-color" content="#0f766e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Finanzas JD">
+  <meta name="apple-mobile-web-app-title" content="Finanzas">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
   <link rel="apple-touch-icon" href="assets/icon.svg">
@@ -33,7 +33,7 @@
           <i data-lucide="smartphone" class="w-4 h-4 text-white"></i>
         </div>
         <span class="truncate font-medium text-purple-100">
-          Instala <strong>JD Finanzas</strong> en tu pantalla de inicio para abrirla como app nativa.
+          Instala <strong>Control Financiero</strong> en tu pantalla de inicio para abrirla como app nativa.
         </span>
       </div>
       <div class="flex items-center gap-2 flex-shrink-0">
@@ -53,13 +53,13 @@
       
       <!-- Logo y Branding JD -->
       <div class="app-brand cursor-pointer" onclick="App.switchTab('dashboard')">
-        <img src="assets/icon.svg" alt="JD Finanzas" class="app-logo">
+        <img src="assets/icon.svg" alt="Control Financiero" class="app-logo">
         <div class="app-brand-copy">
           <div class="flex items-center gap-1.5">
-            <h1 class="font-black text-lg tracking-tight text-white leading-none">JD Finanzas</h1>
+            <h1 class="font-black text-lg tracking-tight text-white leading-none">Control Financiero</h1>
             <span class="app-pro-badge">PRO</span>
           </div>
-          <p class="text-[11px] text-slate-400 font-medium">Control Quincenal & Cuotas</p>
+          <p class="text-[11px] text-slate-400 font-medium">Ingresos · Quincenas · Cuotas</p>
         </div>
       </div>
 
@@ -113,11 +113,11 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div>
             <div class="flex items-center gap-2">
-              <h2 id="dashGreeting" class="text-2xl sm:text-3xl font-black text-white">¡Hola, JD!</h2>
+              <h2 id="dashGreeting" class="text-2xl sm:text-3xl font-black text-white">¡Hola!</h2>
               <span class="text-xl">👋</span>
             </div>
             <p class="text-sm text-purple-200/80 mt-1 max-w-lg">
-              Aquí tienes el estado en tiempo real de tus pagos de quincena y el progreso de tus deudas en cuotas.
+              Cuenta general de ingresos, pagos y cuotas para tu día a día.
             </p>
           </div>
           
@@ -567,7 +567,7 @@
                 <h2 class="text-xl sm:text-2xl font-black text-white">Calendario Cashea</h2>
                 <span class="cashea-neutral-badge">Seguimiento personal</span>
               </div>
-              <p class="text-xs text-teal-100/70 mt-1 max-w-xl">Organiza compras y sus cuotas cada 14 días. Seguimiento personal, no afiliado a Cashea.</p>
+              <p class="text-xs text-teal-100/70 mt-1 max-w-xl">Organiza compras de tu línea cotidiana o de compras; el inicial y cada cuota se reflejan automáticamente en la quincena correspondiente.</p>
             </div>
           </div>
           <button onclick="App.openAddCasheaModal()" class="btn-cashea flex-shrink-0"><i data-lucide="plus" class="w-4 h-4"></i> Registrar plan</button>
@@ -669,7 +669,7 @@
           </div>
 
           <div class="p-3.5 rounded-xl bg-purple-950/60 border border-purple-800/40 text-xs text-purple-300/80 leading-relaxed">
-            💡 <strong>Consejo JD:</strong> Si mantienes tu saldo libre por encima del 20% de tu ingreso, tendrás margen para amortizar tus deudas en cuotas más rápido y evitar intereses.
+            💡 <strong>Consejo financiero:</strong> Si mantienes tu saldo libre por encima del 20% de tu ingreso, tendrás margen para amortizar tus deudas en cuotas más rápido y evitar intereses.
           </div>
         </div>
 
@@ -687,7 +687,7 @@
           </div>
           <div>
             <h2 class="text-xl sm:text-2xl font-black text-white">Ajustes & Respaldo</h2>
-            <p class="text-xs text-purple-300/80">Personalización para JD, copias de seguridad e instalación.</p>
+            <p class="text-xs text-purple-300/80">Personalización de tu perfil, copias de seguridad e instalación.</p>
           </div>
         </div>
       </div>
@@ -702,7 +702,7 @@
 
           <div>
             <label class="block text-xs font-semibold text-purple-200 mb-1.5">Nombre en la aplicación</label>
-            <input type="text" id="settingUserName" value="JD" class="w-full bg-purple-950/60 border border-purple-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-400">
+            <input type="text" id="settingUserName" value="Usuario" class="w-full bg-purple-950/60 border border-purple-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-400">
           </div>
 
           <div>
@@ -991,7 +991,7 @@
     <div class="glass-card-elevated w-full max-w-lg p-5 sm:p-6 rounded-3xl border border-teal-600/40 animate-fade-in max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2.5">
-          <img src="assets/cashea-mark.svg" alt="" class="w-9 h-9">
+          <img src="assets/cashea-mark.svg" alt="Cashea" class="w-9 h-9">
           <div><h3 class="font-black text-lg text-white">Registrar plan Cashea</h3><p class="text-[10px] text-teal-200/60">Seguimiento personal, no afiliado a Cashea</p></div>
         </div>
         <button class="modal-close text-slate-400 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -1005,28 +1005,48 @@
           <label class="block text-xs font-semibold text-slate-200 mb-1">Comercio (opcional)</label>
           <input type="text" id="casheaMerchant" maxlength="120" placeholder="Nombre del comercio" class="form-control">
         </div>
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-200 mb-1">Monto total *</label>
-            <input type="number" id="casheaTotalAmount" min="0.01" step="0.01" required placeholder="0.00" class="form-control">
+            <label class="block text-xs font-semibold text-slate-200 mb-1">Tipo de línea *</label>
+            <select id="casheaLineType" required class="form-control">
+              <option value="cotidiana">Línea cotidiana (1 o 2 cuotas)</option>
+              <option value="compras">Línea de compras (3, 6, 9 o 12 cuotas)</option>
+            </select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-200 mb-1">Número de cuotas *</label>
-            <input type="number" id="casheaInstallmentCount" min="1" max="120" step="1" required placeholder="4" class="form-control">
+            <select id="casheaInstallmentCount" required class="form-control"></select>
           </div>
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-200 mb-1">Primera fecha de cuota *</label>
-          <input type="date" id="casheaFirstDate" required class="form-control">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-200 mb-1">Monto total de la compra *</label>
+            <input type="number" id="casheaTotalAmount" min="0.01" step="0.01" required placeholder="0.00" class="form-control">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-200 mb-1">Inicial (%) *</label>
+            <input type="number" id="casheaInitialPercent" min="0" max="100" step="0.01" value="0" required class="form-control">
+            <span class="text-[10px] text-slate-400">Puede ser 0%.</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-200 mb-1">Fecha del inicial *</label>
+            <input type="date" id="casheaInitialDate" required class="form-control">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-200 mb-1">Primera fecha de cuota *</label>
+            <input type="date" id="casheaFirstDate" required class="form-control">
+          </div>
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-200 mb-1">Notas (opcional)</label>
           <textarea id="casheaNotes" maxlength="300" rows="2" placeholder="Referencia personal" class="form-control resize-none"></textarea>
         </div>
-        <div id="casheaSchedulePreview" class="cashea-preview">Completa monto, cuotas y fecha para previsualizar el calendario.</div>
+        <div id="casheaSchedulePreview" class="cashea-preview">Completa línea, monto, inicial y fechas para previsualizar.</div>
         <div class="pt-2 flex justify-end gap-2">
           <button type="button" class="modal-close px-4 py-2 text-xs text-slate-400 hover:text-white">Cancelar</button>
-          <button type="submit" class="btn-cashea"><i data-lucide="calendar-plus" class="w-4 h-4"></i> Crear calendario</button>
+          <button type="submit" class="btn-cashea"><i data-lucide="calendar-plus" class="w-4 h-4"></i> Crear plan y añadir a Quincena</button>
         </div>
       </form>
     </div>
@@ -1040,7 +1060,7 @@
       </div>
       <h3 class="font-black text-xl text-white mb-1">Instalar en iPhone / iPad</h3>
       <p class="text-xs text-purple-200/80 mb-5">
-        Para tener <strong>JD Finanzas</strong> en tu pantalla de inicio como una aplicación real:
+        Para tener <strong>Control Financiero</strong> en tu pantalla de inicio como una aplicación real:
       </p>
 
       <div class="space-y-3 text-left text-xs bg-purple-950/60 p-4 rounded-2xl border border-purple-900/60 mb-5">
@@ -1070,7 +1090,7 @@
       <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-300">
         <i data-lucide="download" class="w-7 h-7"></i>
       </div>
-      <h3 class="font-black text-xl text-white mb-1">Instalar JD Finanzas</h3>
+      <h3 class="font-black text-xl text-white mb-1">Instalar Control Financiero</h3>
       <p class="text-xs text-purple-200/80 mb-5">
         Puedes instalar la app en Chrome, Edge o tu navegador móvil para usarla sin conexión:
       </p>
@@ -1082,7 +1102,7 @@
         </div>
         <div class="flex items-start gap-2.5">
           <span class="w-5 h-5 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center flex-shrink-0 text-[10px]">2</span>
-          <span class="text-purple-100">Selecciona <strong>"Instalar JD Finanzas"</strong> o "Agregar a pantalla principal".</span>
+          <span class="text-purple-100">Selecciona <strong>"Instalar Control Financiero"</strong> o "Agregar a pantalla principal".</span>
         </div>
       </div>
 
