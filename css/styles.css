@@ -664,3 +664,217 @@ body.auth-locked > :not(#authScreen):not(script) {
 @media (max-width: 480px) {
   .local-auth-actions { grid-template-columns: 1fr; }
 }
+
+/* ========================================================================
+   IDENTIDAD V4 - AZUL PETRÓLEO, VERDE AGUA Y DORADO
+   ======================================================================== */
+:root {
+  --brand-navy: #071923;
+  --brand-slate: #102635;
+  --brand-teal: #0f766e;
+  --brand-mint: #5eead4;
+  --brand-gold: #facc15;
+  --brand-gold-soft: #fde68a;
+  --brand-text-soft: #a8bac8;
+}
+
+html {
+  width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+  scroll-behavior: smooth;
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip !important;
+  background:
+    radial-gradient(circle at 88% -8%, rgba(20, 184, 166, 0.13), transparent 30rem),
+    radial-gradient(circle at 3% 105%, rgba(250, 204, 21, 0.06), transparent 28rem),
+    var(--bg-primary) !important;
+}
+
+body::after {
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.08) 0%, rgba(8, 15, 23, 0) 70%);
+}
+
+header.sticky {
+  width: 100%;
+  max-width: 100%;
+  background: rgba(7, 25, 35, 0.92) !important;
+  border-color: rgba(94, 234, 212, 0.18) !important;
+}
+
+.header-shell {
+  width: 100%;
+  min-width: 0;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.app-logo {
+  width: 2.65rem;
+  height: 2.65rem;
+  flex: 0 0 auto;
+  border-radius: 0.85rem;
+  box-shadow: 0 6px 18px rgba(15, 118, 110, 0.28);
+}
+
+.app-brand-copy {
+  min-width: 0;
+}
+
+.app-pro-badge {
+  padding: 0.16rem 0.38rem;
+  border: 1px solid rgba(250, 204, 21, 0.42);
+  border-radius: 0.35rem;
+  color: var(--brand-gold-soft);
+  background: rgba(250, 204, 21, 0.1);
+  font-size: 0.55rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+}
+
+.app-desktop-nav {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.app-desktop-nav::-webkit-scrollbar { display: none; }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
+main {
+  width: 100%;
+  min-width: 0;
+}
+.tab-panel,
+.glass-card,
+.glass-card-elevated {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.bg-gradient-card {
+  background: linear-gradient(145deg, rgba(18, 61, 72, 0.82), rgba(10, 24, 35, 0.96)) !important;
+  border-color: rgba(94, 234, 212, 0.25) !important;
+}
+.progress-container {
+  background: rgba(30, 41, 59, 0.78) !important;
+  border-color: rgba(94, 234, 212, 0.16) !important;
+}
+.progress-fill-purple {
+  background: linear-gradient(90deg, #0f766e, #5eead4) !important;
+  box-shadow: none !important;
+}
+.badge-purple {
+  color: #c9f5ef !important;
+  background: rgba(15, 118, 110, 0.16) !important;
+  border-color: rgba(94, 234, 212, 0.28) !important;
+}
+
+/* Cashea usa amarillo/dorado como acento visual. */
+.cashea-brand-logo {
+  flex: 0 0 auto;
+  filter: drop-shadow(0 5px 12px rgba(250, 204, 21, 0.16));
+}
+.cashea-neutral-badge {
+  color: #fef3c7 !important;
+  background: rgba(250, 204, 21, 0.1) !important;
+  border-color: rgba(250, 204, 21, 0.32) !important;
+}
+.cashea-hero {
+  border-color: rgba(250, 204, 21, 0.28) !important;
+  background: linear-gradient(135deg, rgba(73, 61, 18, 0.38), rgba(15, 35, 47, 0.96)) !important;
+}
+.btn-cashea {
+  color: #17120a !important;
+  border-color: rgba(253, 230, 138, 0.5) !important;
+  background: linear-gradient(135deg, #fde68a, #eab308) !important;
+}
+.btn-cashea:hover {
+  background: linear-gradient(135deg, #fef08a, #facc15) !important;
+}
+.cashea-number {
+  color: #fef3c7 !important;
+  background: rgba(250, 204, 21, 0.18) !important;
+}
+.cashea-progress span { background: linear-gradient(90deg, #eab308, #5eead4) !important; }
+
+/* No se recortan inputs, tarjetas ni calendarios en pantallas estrechas. */
+img,
+svg,
+canvas,
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
+}
+.modal-container > div {
+  max-height: min(92dvh, 48rem);
+  overflow-y: auto;
+}
+.cashea-installment > * { min-width: 0; }
+.cashea-date,
+.cashea-installment strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 1180px) {
+  .header-shell {
+    flex-wrap: wrap;
+  }
+  .app-desktop-nav {
+    order: 3;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    padding: 0.25rem;
+  }
+  .header-actions { margin-left: auto; }
+}
+
+@media (max-width: 767px) {
+  body { padding-bottom: 5.8rem !important; }
+  header.sticky { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+  .header-shell { flex-wrap: nowrap; gap: 0.45rem; }
+  .app-logo { width: 2.35rem; height: 2.35rem; }
+  .app-brand-copy p { max-width: 9.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .app-brand-copy h1 { font-size: 0.92rem !important; }
+  .header-actions .btn-install-pwa { display: none !important; }
+  .header-actions button:last-child { padding-left: 0.65rem !important; padding-right: 0.65rem !important; }
+  .mobile-nav-grid { width: 100%; min-width: 0; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .mobile-nav-grid button { min-width: 0; overflow: hidden; }
+  .mobile-nav-grid span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cashea-plan-head { gap: 0.5rem; }
+  .cashea-plan-head h3 { max-width: 13rem; }
+  .cashea-installment { grid-template-columns: 1.15rem 1.55rem minmax(0, 1fr) auto !important; }
+}
+
+@media (max-width: 380px) {
+  .app-brand-copy { display: none; }
+  .header-actions button:last-child { font-size: 0 !important; }
+  .header-actions button:last-child i { margin: 0 !important; }
+  main { padding-left: 0.7rem !important; padding-right: 0.7rem !important; }
+}
+
+.auth-brand-logo {
+  width: min(68%, 13rem);
+  height: auto;
+  max-height: 13rem;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 24px rgba(94, 234, 212, 0.2));
+}

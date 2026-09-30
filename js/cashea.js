@@ -164,7 +164,7 @@ const CasheaManager = {
     if (!plans.length) {
       list.innerHTML = `
         <div class="cashea-empty">
-          <img src="assets/cashea-mark.svg" alt="" class="w-14 h-14">
+          <img src="assets/cashea-mark.svg" alt="Cashea" class="cashea-brand-logo w-14 h-14">
           <h3>Aún no hay planes registrados</h3>
           <p>Cuando agregues una compra verás aquí cada cuota separada exactamente por 14 días.</p>
           <button onclick="App.openAddCasheaModal()" class="btn-cashea"><i data-lucide="plus" class="w-4 h-4"></i> Registrar primer plan</button>
@@ -189,7 +189,7 @@ const CasheaManager = {
       <article class="cashea-plan-card">
         <div class="cashea-plan-head">
           <div class="flex items-center gap-3 min-w-0">
-            <img src="assets/cashea-mark.svg" alt="Marca C" class="w-10 h-10 flex-shrink-0">
+            <img src="assets/cashea-mark.svg" alt="Cashea" class="cashea-brand-logo w-10 h-10 flex-shrink-0">
             <div class="min-w-0">
               <h3>${this.escapeHTML(plan.title)}</h3>
               <p>${plan.merchant ? this.escapeHTML(plan.merchant) : 'Comercio no especificado'}${plan.notes ? ` · ${this.escapeHTML(plan.notes)}` : ''}</p>

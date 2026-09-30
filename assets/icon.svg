@@ -1,58 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">JD Finanzas</title>
+  <desc id="desc">Símbolo original de JD Finanzas en azul petróleo, verde agua y dorado.</desc>
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#7c3aed"/>
-      <stop offset="50%" stop-color="#581c87"/>
-      <stop offset="100%" stop-color="#2e1065"/>
+    <linearGradient id="background" x1="40" y1="30" x2="470" y2="480" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#123b4a"/>
+      <stop offset="1" stop-color="#071923"/>
     </linearGradient>
-    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#c084fc"/>
-      <stop offset="50%" stop-color="#a855f7"/>
-      <stop offset="100%" stop-color="#7e22ce"/>
+    <linearGradient id="accent" x1="110" y1="110" x2="410" y2="410" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5eead4"/>
+      <stop offset="1" stop-color="#0f766e"/>
     </linearGradient>
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#f59e0b"/>
+    <linearGradient id="gold" x1="320" y1="90" x2="400" y2="170" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fde68a"/>
+      <stop offset="1" stop-color="#f59e0b"/>
     </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="16" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
   </defs>
-  
-  <!-- Background rounded squircle -->
-  <rect x="24" y="24" width="464" height="464" rx="110" fill="url(#bgGrad)"/>
-  
-  <!-- Subtle border highlight -->
-  <rect x="26" y="26" width="460" height="460" rx="108" fill="none" stroke="#a855f7" stroke-width="4" stroke-opacity="0.5"/>
-  
-  <!-- Inner circular glow -->
-  <circle cx="256" cy="256" r="180" fill="#9333ea" opacity="0.15" filter="url(#glow)"/>
-
-  <!-- Shield/Vault Icon outline -->
-  <path d="M 256,90 L 375,145 C 375,270 256,360 256,380 C 256,360 137,270 137,145 Z" 
-        fill="url(#accentGrad)" fill-opacity="0.25" stroke="url(#accentGrad)" stroke-width="8" stroke-linejoin="round"/>
-
-  <!-- JD Monogram in Center -->
-  <text x="256" y="275" 
-        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
-        font-size="140" 
-        font-weight="900" 
-        fill="#ffffff" 
-        text-anchor="middle" 
-        letter-spacing="2"
-        filter="url(#glow)">JD</text>
-
-  <!-- Financial badge / Sparkle / Coins indicator -->
-  <circle cx="345" cy="165" r="32" fill="url(#goldGrad)" stroke="#ffffff" stroke-width="4"/>
-  <text x="345" y="177" font-family="system-ui, sans-serif" font-size="34" font-weight="bold" fill="#78350f" text-anchor="middle">$</text>
-  
-  <!-- Bottom Finanzas label -->
-  <text x="256" y="435" 
-        font-family="system-ui, -apple-system, sans-serif" 
-        font-size="32" 
-        font-weight="700" 
-        fill="#d8b4fe" 
-        text-anchor="middle" 
-        letter-spacing="6">FINANZAS</text>
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="url(#background)"/>
+  <rect x="27" y="27" width="458" height="458" rx="109" fill="none" stroke="#5eead4" stroke-opacity=".32" stroke-width="4"/>
+  <path d="M128 346V166c0-22 18-40 40-40h176c22 0 40 18 40 40v180" fill="none" stroke="url(#accent)" stroke-width="18" stroke-linecap="round"/>
+  <path d="M112 350h288" stroke="#5eead4" stroke-opacity=".55" stroke-width="10" stroke-linecap="round"/>
+  <rect x="160" y="254" width="42" height="86" rx="12" fill="#99f6e4"/>
+  <rect x="235" y="214" width="42" height="126" rx="12" fill="#5eead4"/>
+  <rect x="310" y="168" width="42" height="172" rx="12" fill="url(#gold)"/>
+  <circle cx="392" cy="120" r="34" fill="url(#gold)" stroke="#fff7d6" stroke-width="5"/>
+  <path d="M392 101v38M373 120h38" stroke="#713f12" stroke-width="7" stroke-linecap="round"/>
+  <text x="256" y="430" font-family="system-ui,-apple-system,'Segoe UI',sans-serif" font-size="54" font-weight="900" fill="#f1f5f9" text-anchor="middle" letter-spacing="8">JD</text>
 </svg>
