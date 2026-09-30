@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jd-finanzas-v3.0.6';
+const CACHE_NAME = 'jd-finanzas-v3.0.7';
 const STATIC_ASSETS = [
   './',
   './index.html',

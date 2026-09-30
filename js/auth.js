@@ -68,7 +68,7 @@ const AuthManager = {
   renderShell(content) {
     const screen = this.ensureScreen();
     screen.innerHTML = `
-      <div class="auth-card">
+  <div class="auth-card">
         <div class="auth-brand" aria-hidden="true"><img src="assets/icon.svg" alt="Control Financiero" class="auth-brand-logo"></div>
         <div class="auth-copy">
           <span class="auth-eyebrow">CONTROL FINANCIERO</span>

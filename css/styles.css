@@ -878,3 +878,60 @@ button {
   object-fit: contain;
   filter: drop-shadow(0 12px 24px rgba(94, 234, 212, 0.2));
 }
+
+/* Ajuste final de identidad y densidad visual */
+.auth-card {
+  display: block;
+  width: min(100%, 34rem);
+  background: #102333;
+}
+.auth-brand {
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.35rem 1.35rem 0.75rem;
+  background: linear-gradient(145deg, #123b4a, #0f766e) !important;
+}
+.auth-brand-logo {
+  width: clamp(7.5rem, 28vw, 11rem);
+  height: auto;
+  max-height: 11rem;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(2, 8, 15, 0.2));
+}
+.auth-copy {
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+.dashboard-quick-grid {
+  align-items: start;
+}
+.dashboard-quick-grid > .glass-card {
+  height: fit-content;
+}
+#dashUpcomingList > .text-center {
+  min-height: 4.25rem;
+  display: grid;
+  place-items: center;
+}
+
+/* Superficies claras sobre fondo oscuro, con botones teal más profundos. */
+.glass-card,
+.glass-card-elevated {
+  background: rgba(17, 39, 54, 0.9) !important;
+  border-color: rgba(94, 234, 212, 0.16) !important;
+}
+.btn-purple {
+  background: linear-gradient(135deg, #0f766e, #115e59) !important;
+  border-color: rgba(153, 246, 228, 0.22) !important;
+  box-shadow: 0 5px 14px rgba(4, 58, 62, 0.24) !important;
+}
+.btn-purple:hover {
+  background: linear-gradient(135deg, #14958a, #0f766e) !important;
+}
+
+@media (max-width: 767px) {
+  .auth-card { width: min(100%, 25rem); }
+  .auth-brand { padding-top: 1rem; }
+  .auth-brand-logo { width: min(9rem, 42vw); }
+}
