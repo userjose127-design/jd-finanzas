@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JD FINANZAS - MÓDULO PWA & INSTALACIÓN EN MÓVIL / ESCRITORIO
+   CONTROL FINANCIERO - MÓDULO PWA & INSTALACIÓN EN MÓVIL / ESCRITORIO
    ========================================================================== */
 
 const PWAManager = {
@@ -35,7 +35,7 @@ const PWAManager = {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
           .then((reg) => {
-            console.log('JD Finanzas SW registrado:', reg.scope);
+            console.log('Control Financiero SW registrado:', reg.scope);
           })
           .catch((err) => {
             console.warn('Error registrando Service Worker:', err);
@@ -67,7 +67,7 @@ const PWAManager = {
       if (banner) banner.classList.add('hidden');
 
       if (window.App) {
-        window.App.showNotification('🎉 ¡JD Finanzas se instaló con éxito en tu dispositivo!', 'success');
+        window.App.showNotification('🎉 ¡Control Financiero se instaló con éxito en tu dispositivo!', 'success');
       }
     });
   },
@@ -84,7 +84,7 @@ const PWAManager = {
       this.deferredPrompt.prompt();
       const { outcome } = await this.deferredPrompt.userChoice;
       if (outcome === 'accepted') {
-        console.log('El usuario aceptó instalar JD Finanzas');
+        console.log('El usuario aceptó instalar Control Financiero');
       }
       this.deferredPrompt = null;
     } else if (this.isIOS) {

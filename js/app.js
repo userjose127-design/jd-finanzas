@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JD FINANZAS - CONTROLADOR PRINCIPAL DE LA APLICACIÓN (APP.JS)
+   CONTROL FINANCIERO - CONTROLADOR PRINCIPAL DE LA APLICACIÓN (APP.JS)
    ========================================================================== */
 
 const App = {
@@ -212,7 +212,7 @@ const App = {
     const casheaStats = CasheaManager.calculateStats();
     const settings = StorageManager.getSettings();
     const symbol = settings.currencySymbol || '$';
-    const displayName = settings.userName || 'JD';
+    const displayName = settings.userName || 'Usuario';
 
     // Saludos según la hora
     const hour = new Date().getHours();
@@ -370,8 +370,12 @@ const App = {
     if (!modal) return;
     const form = document.getElementById('formAddCashea');
     if (form) form.reset();
-    const dateInput = document.getElementById('casheaFirstDate');
-    if (dateInput) dateInput.value = new Date().toISOString().slice(0, 10);
+    const initialDate = new Date().toISOString().slice(0, 10);
+    const initialDateInput = document.getElementById('casheaInitialDate');
+    const firstDateInput = document.getElementById('casheaFirstDate');
+    if (initialDateInput) initialDateInput.value = initialDate;
+    if (firstDateInput) firstDateInput.value = CasheaManager.getDefaultFirstDate(initialDate);
+    CasheaManager.updateInstallmentOptions();
     modal.classList.remove('hidden');
     CasheaManager.updatePreview();
     document.getElementById('casheaTitle')?.focus();
@@ -493,17 +497,30 @@ const App = {
     // Form Plan Cashea
     const formCashea = document.getElementById('formAddCashea');
     if (formCashea) {
-      ['casheaTotalAmount', 'casheaInstallmentCount', 'casheaFirstDate'].forEach(id => {
+      const lineTypeInput = document.getElementById('casheaLineType');
+      const countInput = document.getElementById('casheaInstallmentCount');
+      const previewInputs = ['casheaLineType', 'casheaTotalAmount', 'casheaInitialPercent', 'casheaInitialDate', 'casheaFirstDate'];
+      CasheaManager.updateInstallmentOptions();
+      previewInputs.forEach(id => {
         document.getElementById(id)?.addEventListener('input', () => CasheaManager.updatePreview());
+        document.getElementById(id)?.addEventListener('change', () => CasheaManager.updatePreview());
       });
+      lineTypeInput?.addEventListener('change', () => {
+        CasheaManager.updateInstallmentOptions();
+        CasheaManager.updatePreview();
+      });
+      countInput?.addEventListener('change', () => CasheaManager.updatePreview());
       formCashea.addEventListener('submit', (event) => {
         event.preventDefault();
         try {
           CasheaManager.addPlan({
             title: document.getElementById('casheaTitle').value,
             merchant: document.getElementById('casheaMerchant').value,
+            lineType: document.getElementById('casheaLineType').value,
             totalAmount: document.getElementById('casheaTotalAmount').value,
+            initialPercentage: Number(document.getElementById('casheaInitialPercent').value),
             installmentCount: Number(document.getElementById('casheaInstallmentCount').value),
+            initialDate: document.getElementById('casheaInitialDate').value,
             firstDate: document.getElementById('casheaFirstDate').value,
             notes: document.getElementById('casheaNotes').value
           });
@@ -587,7 +604,7 @@ const App = {
     const currencyInput = document.getElementById('settingCurrencySymbol');
     const salaryInput = document.getElementById('settingDefaultSalary');
 
-    if (nameInput) nameInput.value = settings.userName || 'JD';
+    if (nameInput) nameInput.value = settings.userName || 'Usuario';
     if (currencyInput) currencyInput.value = settings.currencySymbol || '$';
     if (salaryInput) salaryInput.value = settings.defaultIncome || 1200;
   },
@@ -598,7 +615,7 @@ const App = {
     const salaryInput = document.getElementById('settingDefaultSalary');
 
     StorageManager.saveSettings({
-      userName: nameInput ? nameInput.value.trim().slice(0, 60) : 'JD',
+      userName: nameInput ? nameInput.value.trim().slice(0, 60) : 'Usuario',
       currencySymbol: currencyInput ? (currencyInput.value.replace(/[<>&"'`]/g, '').trim().slice(0, 12) || '$') : '$',
       defaultIncome: salaryInput ? parseFloat(salaryInput.value) : 1200
     });
@@ -617,7 +634,7 @@ const App = {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = `JD_Finanzas_Respaldo_${new Date().toISOString().split('T')[0]}.json`;
+    anchor.download = `Control_Financiero_Respaldo_${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
@@ -669,7 +686,7 @@ const App = {
     const symbol = settings.currencySymbol || '$';
 
     let csvContent = 'data:text/csv;charset=utf-8,';
-    csvContent += `JD FINANZAS - REPORTE DE QUINCENA\r\n`;
+    csvContent += `CONTROL FINANCIERO - REPORTE DE QUINCENA\r\n`;
     csvContent += `Periodo: ${qData.id}\r\n\r\n`;
 
     csvContent += `INGRESOS REGISTRADOS\r\n`;
@@ -687,7 +704,7 @@ const App = {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `JD_Quincena_${qData.id}.csv`);
+    link.setAttribute('download', `Control_Financiero_Quincena_${qData.id}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

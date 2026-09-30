@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JD FINANZAS - AUTENTICACIÓN EN LA NUBE CON SUPABASE AUTH
+   CONTROL FINANCIERO - AUTENTICACIÓN EN LA NUBE CON SUPABASE AUTH
    Los datos financieros antiguos de localStorage no se migran ni se borran.
    ========================================================================== */
 
@@ -69,9 +69,9 @@ const AuthManager = {
     const screen = this.ensureScreen();
     screen.innerHTML = `
       <div class="auth-card">
-        <div class="auth-brand" aria-hidden="true"><img src="assets/icon.svg" alt="JD Finanzas" class="auth-brand-logo"></div>
+        <div class="auth-brand" aria-hidden="true"><img src="assets/icon.svg" alt="Control Financiero" class="auth-brand-logo"></div>
         <div class="auth-copy">
-          <span class="auth-eyebrow">JD FINANZAS</span>
+          <span class="auth-eyebrow">CONTROL FINANCIERO</span>
           ${content}
           <div class="auth-disclaimer">
             <span aria-hidden="true">⚠</span>

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JD FINANZAS - MÓDULO DE DEUDAS EN CUOTAS (TRACKER & AMORTIZACIÓN)
+   CONTROL FINANCIERO - MÓDULO DE DEUDAS EN CUOTAS (TRACKER & AMORTIZACIÓN)
    ========================================================================== */
 
 const CuotasManager = {
@@ -143,7 +143,7 @@ const CuotasManager = {
           });
         }
         if (window.App) {
-          window.App.showNotification(`🎉 ¡FELICIDADES JD! Liquidaste por completo la deuda "${debt.title}".`, 'success');
+          window.App.showNotification(`🎉 ¡Felicidades! Liquidaste por completo la deuda "${debt.title}".`, 'success');
         }
       } else {
         if (window.App) {

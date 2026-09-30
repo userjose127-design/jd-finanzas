@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JD FINANZAS - MÓDULO DE GESTIÓN DE QUINCENA
+   CONTROL FINANCIERO - MÓDULO DE GESTIÓN DE QUINCENA
    ========================================================================== */
 
 const CATEGORIES = [
@@ -154,13 +154,17 @@ const QuincenaManager = {
     const data = this.getCurrentData();
     data.paymentList = data.paymentList || [];
     const newPayment = {
-      id: StorageManager.createId('pay'),
-      title: payment.title.trim(),
+      id: payment.id || StorageManager.createId('pay'),
+      title: String(payment.title || '').trim(),
       amount: parseFloat(payment.amount),
       category: payment.category || 'Otro',
       dueDate: payment.dueDate || '',
       paid: !!payment.paid,
-      linkedDebtId: payment.linkedDebtId || null
+      linkedDebtId: payment.linkedDebtId || null,
+      sourceType: payment.sourceType || null,
+      linkedCasheaPlanId: payment.linkedCasheaPlanId || null,
+      linkedCasheaEntryId: payment.linkedCasheaEntryId || null,
+      linkedCasheaKind: payment.linkedCasheaKind || null
     };
     data.paymentList.push(newPayment);
     StorageManager.saveQuincena(data);
@@ -169,27 +173,72 @@ const QuincenaManager = {
     return newPayment;
   },
 
+  upsertCasheaPayment(payment) {
+    if (!payment?.dueDate || !payment.linkedCasheaPlanId || !payment.linkedCasheaEntryId) return null;
+    const [year, month, day] = payment.dueDate.split('-').map(Number);
+    if (!year || !month || !day) return null;
+    const period = day <= 15 ? 1 : 2;
+    const data = StorageManager.getQuincena(year, month, period);
+    data.paymentList = data.paymentList || [];
+    const index = data.paymentList.findIndex(item =>
+      item.linkedCasheaPlanId === payment.linkedCasheaPlanId
+      && item.linkedCasheaEntryId === payment.linkedCasheaEntryId
+    );
+    const normalized = {
+      id: payment.id || (index >= 0 ? data.paymentList[index].id : StorageManager.createId('cashea_pay')),
+      title: String(payment.title || 'Pago Cashea').trim(),
+      amount: Number(payment.amount || 0),
+      category: 'Cuotas',
+      dueDate: payment.dueDate,
+      paid: payment.paid === true,
+      linkedDebtId: null,
+      sourceType: 'cashea',
+      linkedCasheaPlanId: payment.linkedCasheaPlanId,
+      linkedCasheaEntryId: payment.linkedCasheaEntryId,
+      linkedCasheaKind: payment.linkedCasheaKind || 'installment'
+    };
+    if (index >= 0) data.paymentList[index] = { ...data.paymentList[index], ...normalized };
+    else data.paymentList.push(normalized);
+    StorageManager.saveQuincena(data);
+    if (year === this.activeYear && month === this.activeMonth && period === this.activePeriod) this.render();
+    return normalized;
+  },
+
+  removeCasheaPayments(planId) {
+    const all = StorageManager.getAllQuincenas();
+    Object.values(all).forEach(data => {
+      const originalLength = (data.paymentList || []).length;
+      data.paymentList = (data.paymentList || []).filter(payment => payment.linkedCasheaPlanId !== planId);
+      if (data.paymentList.length !== originalLength) StorageManager.saveQuincena(data);
+    });
+    this.render();
+  },
+
   togglePayment(paymentId) {
     const data = this.getCurrentData();
     const payment = (data.paymentList || []).find(p => p.id === paymentId);
     if (payment) {
       payment.paid = !payment.paid;
       StorageManager.saveQuincena(data);
+      if (payment.linkedCasheaPlanId && window.CasheaManager) {
+        CasheaManager.syncPaymentToCashea(payment);
+      }
       this.render();
       if (window.App) window.App.updateDashboard();
-
-      // Si se marcó como pagado y está vinculado a una deuda en cuotas, preguntar o sincronizar
-      if (payment.paid && payment.linkedDebtId) {
-        if (window.App && typeof window.App.showNotification === 'function') {
-          window.App.showNotification(`¡Genial JD! Pago registrado: "${payment.title}"`, 'success');
-        }
+      if (window.App && typeof window.App.showNotification === 'function') {
+        window.App.showNotification(`Pago registrado: "${payment.title}"`, 'success');
       }
     }
   },
 
   deletePayment(paymentId) {
     const data = this.getCurrentData();
-    data.paymentList = (data.paymentList || []).filter(p => p.id !== paymentId);
+    const payment = (data.paymentList || []).find(item => item.id === paymentId);
+    if (payment?.linkedCasheaPlanId) {
+      if (window.App) window.App.showNotification('Las cuotas Cashea se gestionan desde el apartado Cashea.', 'info');
+      return;
+    }
+    data.paymentList = (data.paymentList || []).filter(i => i.id !== paymentId);
     StorageManager.saveQuincena(data);
     this.render();
     if (window.App) window.App.updateDashboard();
@@ -212,7 +261,9 @@ const QuincenaManager = {
 
     // Clona los pagos reiniciando el estado a pendiente
     let count = 0;
-    prevData.paymentList.forEach(item => {
+    prevData.paymentList
+      .filter(item => item.sourceType !== 'cashea' && !item.linkedCasheaPlanId)
+      .forEach(item => {
       // Ajusta la fecha a la quincena actual
       const day = item.dueDate ? item.dueDate.split('-')[2] : '15';
       const newDueDate = `${this.activeYear}-${String(this.activeMonth).padStart(2, '0')}-${day}`;
@@ -232,7 +283,7 @@ const QuincenaManager = {
     this.render();
     if (window.App) {
       window.App.updateDashboard();
-      window.App.showNotification(`¡Listo JD! Se duplicaron ${count} compromisos de la quincena anterior como pendientes.`, 'success');
+      window.App.showNotification(`¡Listo! Se duplicaron ${count} compromisos de la quincena anterior como pendientes.`, 'success');
     }
   },
 
@@ -476,7 +527,7 @@ const QuincenaManager = {
               <div class="min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
                   <span class="payment-title font-bold text-white text-sm sm:text-base truncate">${this.escapeHTML(pay.title)}</span>
-                  ${pay.linkedDebtId ? '<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30">CUOTA</span>' : ''}
+                  ${pay.linkedCasheaPlanId ? '<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-400/15 text-amber-200 border border-amber-300/30">CASHEA</span>' : (pay.linkedDebtId ? '<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30">CUOTA</span>' : '')}
                 </div>
                 <div class="flex items-center gap-2 text-xs text-purple-300/70 mt-0.5 flex-wrap">
                   <span>${pay.category}</span>
@@ -620,3 +671,6 @@ const QuincenaManager = {
     );
   }
 };
+
+// Exponer el manager para la sincronización con Cashea y otros módulos.
+globalThis.QuincenaManager = QuincenaManager;

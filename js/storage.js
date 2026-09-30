@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JD FINANZAS - PERSISTENCIA LOCAL, MIGRACIÓN Y RESPALDOS
+   CONTROL FINANCIERO - PERSISTENCIA LOCAL, MIGRACIÓN Y RESPALDOS
    ========================================================================== */
 
 const STORAGE_KEYS = {
@@ -14,7 +14,7 @@ const STORAGE_KEYS = {
 const SCHEMA_VERSION = '3.0';
 
 const DEFAULT_SETTINGS = {
-  userName: 'JD',
+  userName: 'Usuario',
   currencySymbol: '$',
   currencyCode: 'USD',
   defaultIncome: 0,
@@ -210,7 +210,7 @@ const StorageManager = {
 
   exportBackup() {
     return JSON.stringify({
-      appName: 'JD Finanzas',
+      appName: 'Control Financiero',
       schemaVersion: SCHEMA_VERSION,
       exportDate: new Date().toISOString(),
       data: {
@@ -392,7 +392,7 @@ const StorageManager = {
     if (/[<>&"'`]/.test(currencySymbol)) throw new Error('El símbolo de moneda contiene caracteres no permitidos.');
     const settings = {
       ...DEFAULT_SETTINGS,
-      userName: this.safeText(source.settings.userName ?? 'JD', 'El nombre de usuario', 60),
+      userName: this.safeText(source.settings.userName ?? 'Usuario', 'El nombre de usuario', 60),
       currencySymbol,
       currencyCode: this.safeText(source.settings.currencyCode ?? 'USD', 'El código de moneda', 12),
       defaultIncome: this.safeNumber(source.settings.defaultIncome ?? 0, 'El ingreso predeterminado'),
@@ -457,21 +457,38 @@ const StorageManager = {
             category,
             dueDate: this.safeDate(payment.dueDate, `La fecha del pago ${paymentIndex + 1} de ${canonicalId}`, true, true),
             paid: payment.paid === true,
-            linkedDebtId: payment.linkedDebtId ? this.safeId(payment.linkedDebtId, `La deuda vinculada del pago ${paymentIndex + 1}`) : null
+            linkedDebtId: payment.linkedDebtId ? this.safeId(payment.linkedDebtId, `La deuda vinculada del pago ${paymentIndex + 1}`) : null,
+            sourceType: payment.sourceType ? this.safeText(payment.sourceType, `El origen del pago ${paymentIndex + 1}`, 30) : null,
+            linkedCasheaPlanId: payment.linkedCasheaPlanId ? this.safeId(payment.linkedCasheaPlanId, `El plan Cashea del pago ${paymentIndex + 1}`) : null,
+            linkedCasheaEntryId: payment.linkedCasheaEntryId ? this.safeId(payment.linkedCasheaEntryId, `La entrada Cashea del pago ${paymentIndex + 1}`) : null,
+            linkedCasheaKind: payment.linkedCasheaKind ? this.safeText(payment.linkedCasheaKind, `El tipo Cashea del pago ${paymentIndex + 1}`, 20) : null
           };
         })
       };
     });
 
     const cashea = sourceCashea.map((plan, planIndex) => {
-      if (!plan || typeof plan !== 'object' || Array.isArray(plan) || !Array.isArray(plan.installments) || plan.installments.length < 1 || plan.installments.length > 120) {
+      if (!plan || typeof plan !== 'object' || Array.isArray(plan)) {
         throw new Error(`El plan Cashea ${planIndex + 1} es inválido.`);
       }
-      const installments = plan.installments.map((installment, installmentIndex) => {
+      const totalCents = Math.round(this.safeNumber(plan.totalAmount, `El total del plan Cashea ${planIndex + 1}`) * 100);
+      const isLegacy = !plan.lineType && plan.initialPayment === undefined && plan.initialPercentage === undefined;
+      const lineType = plan.lineType === undefined ? 'legacy' : this.safeText(plan.lineType, `La línea del plan Cashea ${planIndex + 1}`, 20);
+      if (!['cotidiana', 'compras', 'legacy'].includes(lineType)) throw new Error(`La línea del plan Cashea ${planIndex + 1} no es válida.`);
+      const initialPercentage = isLegacy ? 0 : this.safeNumber(plan.initialPercentage ?? 0, `El inicial del plan Cashea ${planIndex + 1}`, 0, 100);
+      const initialCents = isLegacy
+        ? 0
+        : this.safeInteger(plan.initialCents ?? Math.round(totalCents * initialPercentage / 100), `El inicial del plan Cashea ${planIndex + 1}`, 0, totalCents);
+      const financedCents = isLegacy ? totalCents : totalCents - initialCents;
+      const installments = Array.isArray(plan.installments) ? plan.installments : [];
+      if (installments.length > 120 || (financedCents > 0 && installments.length < 1)) {
+        throw new Error(`Las cuotas del plan Cashea ${planIndex + 1} son inválidas.`);
+      }
+      const normalizedInstallments = installments.map((installment, installmentIndex) => {
         if (!installment || typeof installment !== 'object' || Array.isArray(installment)) throw new Error(`La cuota ${installmentIndex + 1} del plan Cashea es inválida.`);
         const amountCents = installment.amountCents === undefined
           ? Math.round(this.safeNumber(installment.amount, `La cuota ${installmentIndex + 1} del plan Cashea`) * 100)
-          : this.safeInteger(installment.amountCents, `La cuota ${installmentIndex + 1} del plan Cashea`, 0);
+          : this.safeInteger(installment.amountCents, `La cuota ${installmentIndex + 1} del plan Cashea`, 1);
         return {
           id: this.safeId(installment.id, `La cuota ${installmentIndex + 1} del plan Cashea`),
           number: this.safeInteger(installment.number, `El número de cuota ${installmentIndex + 1}`, 1, 120),
@@ -482,25 +499,48 @@ const StorageManager = {
           paidAt: installment.paidAt === null || installment.paidAt === undefined ? null : this.safeText(installment.paidAt, 'La fecha de pago Cashea', 40)
         };
       });
-      const totalCents = installments.reduce((sum, installment) => sum + installment.amountCents, 0);
-      const expectedTotalCents = Math.round(this.safeNumber(plan.totalAmount, `El total del plan Cashea ${planIndex + 1}`) * 100);
-      if (totalCents !== expectedTotalCents) throw new Error(`Las cuotas del plan Cashea ${planIndex + 1} no suman su total.`);
-      for (let index = 1; index < installments.length; index += 1) {
-        const previous = new Date(`${installments[index - 1].date}T00:00:00Z`);
-        const current = new Date(`${installments[index].date}T00:00:00Z`);
+      const installmentsTotalCents = normalizedInstallments.reduce((sum, installment) => sum + installment.amountCents, 0);
+      if (installmentsTotalCents !== financedCents) throw new Error(`Las cuotas del plan Cashea ${planIndex + 1} no coinciden con el monto financiado.`);
+      for (let index = 1; index < normalizedInstallments.length; index += 1) {
+        const previous = new Date(`${normalizedInstallments[index - 1].date}T00:00:00Z`);
+        const current = new Date(`${normalizedInstallments[index].date}T00:00:00Z`);
         if ((current - previous) !== 14 * 24 * 60 * 60 * 1000) throw new Error(`El calendario del plan Cashea ${planIndex + 1} no respeta intervalos de 14 días.`);
       }
+      let initialPayment = null;
+      if (plan.initialPayment) {
+        const paymentCents = this.safeInteger(plan.initialPayment.amountCents ?? Math.round(Number(plan.initialPayment.amount || 0) * 100), `El pago inicial del plan Cashea ${planIndex + 1}`, 1, totalCents);
+        initialPayment = {
+          id: 'initial',
+          date: this.safeDate(plan.initialPayment.date, `La fecha inicial del plan Cashea ${planIndex + 1}`),
+          amountCents: paymentCents,
+          amount: paymentCents / 100,
+          paid: plan.initialPayment.paid === true,
+          paidAt: plan.initialPayment.paidAt === null || plan.initialPayment.paidAt === undefined ? null : this.safeText(plan.initialPayment.paidAt, 'La fecha del pago inicial', 40)
+        };
+      }
+      const firstDate = normalizedInstallments.length
+        ? normalizedInstallments[0].date
+        : this.safeDate(plan.firstDate, `La primera fecha del plan Cashea ${planIndex + 1}`);
       return {
         id: this.safeId(plan.id, `El plan Cashea ${planIndex + 1}`),
         title: this.safeText(plan.title, `El título del plan Cashea ${planIndex + 1}`, 160),
         merchant: this.safeText(plan.merchant ?? '', `El comercio del plan Cashea ${planIndex + 1}`, 160),
+        lineType,
+        lineLabel: this.safeText(plan.lineLabel ?? '', `La etiqueta de línea del plan Cashea ${planIndex + 1}`, 60, true),
         notes: this.safeText(plan.notes ?? '', `Las notas del plan Cashea ${planIndex + 1}`, 500),
         totalAmount: totalCents / 100,
         totalCents,
-        installmentCount: installments.length,
-        firstDate: installments.length ? installments[0].date : this.safeDate(plan.firstDate, `La fecha del plan Cashea ${planIndex + 1}`),
+        initialPercentage,
+        initialAmount: initialCents / 100,
+        initialCents,
+        financedAmount: financedCents / 100,
+        financedCents,
+        installmentCount: this.safeInteger(plan.installmentCount ?? normalizedInstallments.length, `El número de cuotas del plan Cashea ${planIndex + 1}`, 0, 120),
+        initialDate: initialPayment?.date || this.safeDate(plan.initialDate ?? firstDate, `La fecha inicial del plan Cashea ${planIndex + 1}`),
+        firstDate,
         createdAt: this.safeText(plan.createdAt ?? '', `La creación del plan Cashea ${planIndex + 1}`, 40),
-        installments
+        initialPayment,
+        installments: normalizedInstallments
       };
     });
 

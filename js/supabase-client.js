@@ -1,5 +1,5 @@
 /* ========================================================================
-   JD FINANZAS - CONEXIÓN INICIAL CON SUPABASE
+   CONTROL FINANCIERO - CONEXIÓN INICIAL CON SUPABASE
    Solo contiene datos públicos de conexión. No colocar aquí claves secretas.
    ======================================================================== */
 
