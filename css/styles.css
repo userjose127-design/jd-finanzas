@@ -935,3 +935,30 @@ button {
   .auth-brand { padding-top: 1rem; }
   .auth-brand-logo { width: min(9rem, 42vw); }
 }
+
+/* Botones secundarios de autenticación: borde completo y estable en móvil. */
+.auth-form .btn-auth-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.55rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid rgba(94, 234, 212, 0.34) !important;
+  border-radius: 0.75rem;
+  color: #99f6e4;
+  background: rgba(8, 24, 35, 0.48);
+  outline: none;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.auth-form .btn-auth-link:hover {
+  color: #ecfeff;
+  border-color: rgba(153, 246, 228, 0.62) !important;
+  background: rgba(15, 118, 110, 0.2);
+}
+.auth-form .btn-auth-link:focus-visible {
+  border-color: #5eead4 !important;
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.16);
+}

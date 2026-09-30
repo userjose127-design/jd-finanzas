@@ -27,6 +27,8 @@ const PWAManager = {
       });
       const banner = document.getElementById('pwaInstallBanner');
       if (banner) banner.classList.add('hidden');
+      const installSections = document.querySelectorAll('.pwa-install-section');
+      installSections.forEach(section => section.classList.add('hidden'));
     }
   },
 
